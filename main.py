@@ -1,11 +1,7 @@
 import argparse
-import os
-
-import pickle
 import dataset, word2vec as w2v
-import numpy as np
-import logging
-logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
+import config
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -16,10 +12,14 @@ if __name__ == '__main__':
         default=False,
         help='whether train w2v features or use saved model')
 
-
     args = parser.parse_args()
+
+    config.setup()
 
     lexicon = dataset.load_or_create_lexicon()
 
-    data_iter = dataset.load_iter()
-    w2vModel = w2v.createW2VModel()
+    w2v_model = w2v.load_or_create_w2v_model()
+
+    data = dataset.load_data()
+
+
