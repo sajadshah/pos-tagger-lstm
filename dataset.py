@@ -7,13 +7,18 @@ import random
 import pickle
 
 delimiter_labels = ['DELIM', 'FILE_DELIM']
-
+cache_data = None
 
 def load_data():
+    global cache_data
     config.logger.info('loading data ...')
     start_time = time.time()
+    if cache_data != None:
+        return cache_data
+
     if config.saved_data_file != None and os.path.exists(config.saved_data_file):
         data = np.load(config.saved_data_file)
+        cache_data = data
         config.logger.info('loading data took {} (from saved, {} words)'.format((time.time() - start_time), 1, len(data)))
         return data
 
@@ -35,8 +40,34 @@ def load_data():
     data = np.asarray(data)
     config.logger.info('loading data took {} ({} files, {} words)'.format((time.time() - start_time), len(lbl_files), len(data)))
     np.save(config.saved_data_file, data)
-
+    cache_data = data
     return data
+
+
+def load_encoded_sentences_labels(word_to_int, labels_to_int):
+    config.logger.info('loading encoded sentences and labels...')
+    start_time = time.time()
+
+    data = load_data()
+    sentences = []
+    labels = []
+    sentence = []
+    for w, l in data:
+        try:
+            w_index = word_to_int[w]
+        except KeyError:
+            w_index = 0
+        sentence.append(w_index)
+        label_index = labels_to_int[l]
+        if is_delim(w, l):
+            if len(sentence) > 1:
+                sentences.append(sentence)
+                labels.append(label_index)
+            sentence = []
+
+    config.logger.info(
+        'loading encoded sentences labels took {} ({} sentences)'.format((time.time() - start_time), len(sentences)))
+    return sentences, labels
 
 
 def is_delim(word, label):
@@ -109,6 +140,18 @@ def load_or_create_lexicon():
     return lexicon
 
 
+
+def get_data_info():
+    data = load_data()
+    data_size = data.shape
+    labels = np.unique(data[:, 1])
+    label_to_int = {}
+    for i, l in enumerate(labels):
+        label_to_int[i] = l
+
+    config.logger.info('found {} labels'.format(len(labels)))
+    config.logger.info(label_to_int[:20])
+    return data_size, label_to_int, len(labels)
 
 
 

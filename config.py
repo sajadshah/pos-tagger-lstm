@@ -16,6 +16,10 @@ lexicon_file = os.path.join(exp_dir, 'lexicon.npy')
 saved_data_file = os.path.join(exp_dir, 'data.npy')
 w2v_model_file = os.path.join(exp_dir, 'word2vec.model')
 
+embed_size = 100
+batch_size = 100
+lstm_sizes = [256]
+
 logger = None
 
 def make_dirs():
