@@ -14,11 +14,15 @@ save_dir = os.path.join(exp_dir, 'save')
 
 lexicon_file = os.path.join(exp_dir, 'lexicon.npy')
 saved_data_file = os.path.join(exp_dir, 'data.npy')
+encoded_data = os.path.join(exp_dir, 'encoded_data.npy')
 w2v_model_file = os.path.join(exp_dir, 'word2vec.model')
 
 embed_size = 100
-batch_size = 100
-lstm_sizes = [256]
+batch_size = 128
+lstm_sizes = [512, 512]
+start_learning_rate = 0.1
+decay = 0.75
+every_n_iteration = 50
 
 logger = None
 
@@ -50,3 +54,14 @@ def setup():
     make_dirs()
     log_setup()
 
+
+def get_last_model_file():
+    return os.path.join(save_dir, "last_model.ckpt")
+
+
+def get_labels_file():
+    return os.path.join(exp_dir, "labels.json")
+
+
+def get_test_results_file():
+    return os.path.join(exp_dir, "test_results.txt")

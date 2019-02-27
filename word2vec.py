@@ -10,7 +10,7 @@ from gensim.models import Word2Vec, Doc2Vec, LdaModel
 def create_w2v_model(sentences):
     config.logger.info('creating w2v model ...')
 
-    model = Word2Vec(size=100, window=5, min_count=5, workers=4)
+    model = Word2Vec(size=config.embed_size, window=5, min_count=1, workers=4)
     model.build_vocab(sentences)
 
     model.train(sentences, total_examples=model.corpus_count, epochs=model.iter)

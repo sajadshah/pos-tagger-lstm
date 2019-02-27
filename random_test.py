@@ -21,5 +21,5 @@ if __name__ == '__main__':
     w2v_model = w2v.load_or_create_w2v_model()
     lexicon, word_to_index, index_to_word = dataset.create_lexicon_from_w2v(w2v_model)
 
-    model.build_and_train_model(w2v_model, word_to_index, label_to_index, max_sentence_length, num_labels + 1)
+    model.load_and_random_test_model(w2v_model, word_to_index, label_to_index, max_sentence_length, num_labels)
 
